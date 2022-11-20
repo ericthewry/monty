@@ -1,0 +1,4 @@
+(test
+ (name monty_test)
+ (libraries monty alcotest)
+)

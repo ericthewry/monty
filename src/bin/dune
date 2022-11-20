@@ -1,0 +1,4 @@
+(executable
+ (public_name monty)
+ (name main)
+ (libraries monty))
