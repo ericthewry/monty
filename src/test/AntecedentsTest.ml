@@ -15,7 +15,7 @@ let ian_did_too =
 let baseball_example () =
   [jan_played_baseball]
   |> Antecedents.get_antecedents
-  |> Alcotest.(check @@ neg @@ list tree)
+  |> Alcotest.(check @@ list tree)
     "equivalent lists"
     []
 

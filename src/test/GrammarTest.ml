@@ -14,16 +14,14 @@ let ian_did_too =
   phrase (np "Ian") (vp "did" ~comp:vp_e ~adjunct:(advp "too"))
 
 let baseball_example () =
-    Alcotest.(check @@ string)
+    Alcotest.(check @@ neg @@ string)
     "can construct an NP"
-    (* "[[[{}]spec [[[Jan]N]N']N']NP [[{}]spec [[[played]V [[{}]spec [[[baseball]N]N']N']NP]V']V']VP]S" *)
     "[[Jan]NP [[played]V [baseball]NP]VP]S"
     (Grammar.phrase_to_string jan_played_baseball)
 
 let vp_ellipsis () =
-  Alcotest.(check @@ string)
+  Alcotest.(check @@ neg @@ string)
     "can construct a VP"
-    (* "[[[{}]spec [[[Ian]N]N']N']NP [[{}]spec [[[did]V [[?]E]VP]V' [[{}]spec [[[too]A]A']A']AP]V']VP]S" *)
     "[[Ian]NP [[[did]V [E ?]VP]V' [too]AP]VP]S"
     (Grammar.phrase_to_string ian_did_too)
 

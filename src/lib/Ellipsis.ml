@@ -1,12 +1,12 @@
 open Core
 
-let vp_ellipsis_resolution discourse utterance : Grammar.t list =
+let vp_ellipsis_resolution discourse utterance : Grammar.s list =
   let open Grammar in
+  let open List.Let_syntax in
   let rec loop utterance =
     match utterance with
     | Item _ -> [utterance]
     | Node {label; left; right} ->
-      let open List.Let_syntax in
       let open Grammar in
       if equal utterance vp_e then
         let%bind antecedent = Antecedents.get_antecedents discourse in
@@ -41,4 +41,5 @@ let vp_ellipsis_resolution discourse utterance : Grammar.t list =
                 right = Some right
                }
   in
-  loop utterance
+  let%map vp = loop utterance.vp in
+  {utterance with vp}

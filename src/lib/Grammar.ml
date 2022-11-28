@@ -64,8 +64,19 @@ let vp_e =
 let np ?comp ?adjunct head =
   xbar "N" ~spec:None ~comp ~adjunct ~head
 
+let dp ?comp ?adjunct head =
+  xbar "D" ~spec:None ~comp ~adjunct ~head
+
 let advp ?comp ?adjunct head =
   xbar "A" ~spec:None ~comp ~adjunct ~head
+
+let ewrap vp =
+  Node {
+    label = "VP";
+    left = Some (Item {label = ""; item = "E" });
+    right = Some vp
+  }
+
 
 type s = {np : t; vp : t} [@@deriving sexp, equal]
 
