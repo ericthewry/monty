@@ -2,7 +2,7 @@ open Core
 
 type t =
   | Item of {label : string ; item : string }
-  | Node of {label: string; left: t option; right: t option}
+  | Node of {label : string; left: t option; right: t option}
   [@@deriving sexp, equal]
 
 let tick = Printf.sprintf "%s'"
@@ -77,6 +77,27 @@ let ewrap vp =
     right = Some vp
   }
 
+let semantics items =
+  let rec loop tree : LC.t =
+    match tree with
+    | Item {label; item} ->
+      begin match String.Map.find items item with
+      | None -> failwithf "Could not find %s item: %s" label item ()
+      | Some lc_term ->
+        lc_term
+      end
+    | Node {label; left; right} ->
+      match left, right with
+      | None, None -> failwithf "node %s cannot be a leaf" label ()
+      | Some left, Some right ->
+        let lc_left = loop left in
+        let lc_right = loop right in
+        LC.app [lc_left; lc_right]
+        |> LC.beta
+      | Some e, _ | _, Some e ->
+        loop e
+  in
+  loop
 
 type s = {np : t; vp : t} [@@deriving sexp, equal]
 
@@ -86,4 +107,14 @@ let phrase_to_string {np; vp} =
   Printf.sprintf
     "[%s %s]S" (to_string np) (to_string vp)
 
+let phrase_semantics items (phrase : s) =
+  let np_lc = semantics items phrase.np in
+  let vp_lc = semantics items phrase.vp in
+  let open LC in
+  app [vp_lc; np_lc]
+  |> beta
+
 type d = s list [@@deriving sexp, equal]
+
+let discourse_semantics items =
+  List.map ~f:(phrase_semantics items)
